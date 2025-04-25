@@ -9,6 +9,8 @@ This project provides a Model Context Protocol (MCP) server that allows interact
 * "Add predictions for my tasks." 
 * "Update my labeling template to include a comment box." 
 
+<img src="./static/example.png" alt="Example usage of Label Studio MCP Server" width="600">
+
 ## Features
 
 *   **Project Management**: Create, update, list, and view details/configurations of Label Studio projects.
