@@ -1,0 +1,14 @@
+[project]
+name = "label-studio-mcp"
+version = "0.1.0"
+description = "A Model Context Protocol (MCP) server for Label Studio"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "label-studio-sdk>=1.0.11",
+    "markdownify>=1.1.0",
+    "mcp[cli]>=1.6.0",
+    "protego>=0.4.0",
+    "readabilipy>=0.3.0",
+]
