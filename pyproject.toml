@@ -3,7 +3,7 @@ name = "label-studio-mcp"
 version = "0.1.0"
 description = "A Model Context Protocol (MCP) server for Label Studio"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.28.1",
     "label-studio-sdk>=1.0.11",
