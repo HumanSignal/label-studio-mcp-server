@@ -68,61 +68,8 @@ def json_datetime_serializer(obj):
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
 # ============================================
-# == Label Studio Resource Definitions      ==
-# ============================================
-# Note: These might be redundant if only tools are used.
-
-@mcp.resource("labelstudio://projects")
-@require_ls_connection
-def list_projects() -> str:
-    """Lists available Label Studio projects."""
-    projects = ls.get_projects()
-    return json.dumps([{"id": p.id, "title": p.title, "task_count": p.task_number} for p in projects])
-
-@mcp.resource("labelstudio://projects/{project_id}")
-@require_ls_connection
-def get_project_details(project_id: int) -> str:
-    """Provides details for a specific Label Studio project."""
-    project = ls.get_project(id=project_id)
-    project_data = project.model_dump(exclude={'created_at', 'updated_at'})
-    project_data['created_at'] = project.created_at.isoformat() if project.created_at else None
-    return json.dumps(project_data)
-
-@mcp.resource("labelstudio://projects/{project_id}/config")
-@require_ls_connection
-def get_project_config(project_id: int) -> str:
-    """Provides the XML labeling configuration for a Label Studio project."""
-    project = ls.get_project(id=project_id)
-    return project.label_config
-
-@mcp.resource("labelstudio://projects/{project_id}/tasks")
-@require_ls_connection
-def list_project_tasks(project_id: int) -> str:
-    """Lists tasks within a specific Label Studio project (returns basic info)."""
-    project = ls.get_project(id=project_id)
-    tasks = project.get_tasks()
-    return json.dumps([{"id": t.id, "data_keys": list(t.data.keys())} for t in tasks[:50]])
-
-@mcp.resource("labelstudio://projects/{project_id}/tasks/{task_id}")
-@require_ls_connection
-def get_task_data(project_id: int, task_id: int) -> str:
-    """Provides the data payload for a specific Label Studio task."""
-    task = ls.get_task(id=task_id)
-    return json.dumps(task.data)
-
-@mcp.resource("labelstudio://projects/{project_id}/tasks/{task_id}/annotations")
-@require_ls_connection
-def get_task_annotations(project_id: int, task_id: int) -> str:
-    """Provides annotations for a specific Label Studio task."""
-    task = ls.get_task(id=task_id)
-    annotations = task.get_annotations()
-    return json.dumps([anno.model_dump() for anno in annotations])
-
-# ============================================
 # == Label Studio Tool Definitions          ==
 # ============================================
-
-# --- Project Getter Tools ---
 
 @mcp.tool()
 @require_ls_connection
@@ -437,8 +384,6 @@ def import_label_studio_project_tasks_tool(
 
     return json.dumps(final_response)
 
-# --- Prediction Tools ---
-
 @mcp.tool()
 @require_ls_connection
 def create_label_studio_prediction_tool(
@@ -501,9 +446,6 @@ def create_label_studio_prediction_tool(
         import traceback
         return f"Error during Label Studio prediction create/serialize: {type(e).__name__} - {e}\n{traceback.format_exc()}"
 
-# ============================================
-# == Main Execution Block                   ==
-# ============================================
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Label Studio MCP Server")
