@@ -10,31 +10,10 @@ from label_studio_sdk.label_interface import LabelInterface
 from pydantic import BaseModel
 import datetime
 
+from .mcp_env import LABEL_STUDIO_URL, LABEL_STUDIO_API_KEY, ls
+
 # Initialize FastMCP server
-mcp = FastMCP("LabelStudioIntegration")
-
-# Label Studio Constants and Client Initialization
-LABEL_STUDIO_URL = os.getenv("LABEL_STUDIO_URL", "http://localhost:8080")
-LABEL_STUDIO_API_KEY = os.getenv("LABEL_STUDIO_API_KEY")
-
-# Initialize Label Studio Client
-ls = None # Initialize ls to None
-try:
-    # Check if API Key is provided
-    if not LABEL_STUDIO_API_KEY:
-        print("Error: LABEL_STUDIO_API_KEY environment variable not set.")
-        raise ValueError("Label Studio API Key is required.") # Raise error to prevent proceeding
-        
-    ls = LabelStudio(base_url=LABEL_STUDIO_URL, api_key=LABEL_STUDIO_API_KEY)
-    # ls.check_connection() # Removed as this method doesn't appear to exist in the current SDK
-    print(f"Connected to Label Studio at {LABEL_STUDIO_URL}")
-except ValueError as ve:
-    # Catch the specific ValueError from our check
-    print(f"Initialization failed: {ve}")
-    ls = None # Ensure ls is None if API key is missing
-except Exception as e:
-    print(f"Error connecting to Label Studio: {e}")
-    ls = None # Ensure ls is None on other connection errors
+mcp = FastMCP("label-studio-mcp")
 
 # Helper to handle potential lack of LS connection
 def require_ls_connection(func):
@@ -445,24 +424,3 @@ def create_label_studio_prediction_tool(
         # Catch errors specifically during the prediction creation API call OR manual serialization
         import traceback
         return f"Error during Label Studio prediction create/serialize: {type(e).__name__} - {e}\n{traceback.format_exc()}"
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Label Studio MCP Server")
-    parser.add_argument("--transport", choices=["http", "stdio"], default="stdio",
-                        help="Transport method (http or stdio)")
-    parser.add_argument("--port", type=int, default=3000,
-                        help="Port number when using http transport")
-    parser.add_argument("--host", default="0.0.0.0",
-                        help="Host address when using http transport")
-    args = parser.parse_args()
-    
-    if ls is None:
-        print("Warning: Label Studio client failed to initialize. LS features will be unavailable.")
-    
-    if args.transport == "http":
-        print(f"Starting HTTP server on {args.host}:{args.port}")
-        mcp.run(transport='http', host=args.host, port=args.port)
-    else:
-        print("Starting stdio transport")
-        mcp.run(transport='stdio')

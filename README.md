@@ -22,8 +22,35 @@ This project provides a Model Context Protocol (MCP) server that allows interact
 
 1.  **Running Label Studio Instance:** You need a running instance of Label Studio accessible from where this MCP server will run.
 2.  **API Key:** Obtain an API key from your user account settings in Label Studio.
-3.  **Python Environment:** Python 3.x with `uv` installed for package management is recommended.
 
+## Configuration
+
+The MCP server requires the URL and API key for your Label Studio instance. If launching the server via an MCP client configuration file, you can specify the environment variables directly within the server definition. This is often preferred for client-managed servers.
+
+Example `mcp.json` entry:
+
+```json
+{
+    "mcpServers": {
+        "label-studio": {
+            "command": "uv",
+            "args": [
+                "run",
+                "--with", 
+                "label-studio-mcp", 
+                "--python",
+                "3.13",
+                "label-studio-mcp"
+            ],
+            "env": {
+                "LABEL_STUDIO_API_KEY": "your_actual_api_key_here", // <-- Your API key
+                "LABEL_STUDIO_URL": "http://localhost:8080"
+            }
+        }
+    }
+}
+```
+<!-- 
 ## Installation
 Follow these instructions to install the server. 
 ```bash
@@ -36,24 +63,7 @@ source .venv/bin/activate
 uv sync
 ```
 
-## Configuration
 
-The MCP server requires the URL and API key for your Label Studio instance. There are two main ways to configure this:
-
-1.  **Environment Variables:**
-    Set the following environment variables in your terminal session *before* running the server:
-    ```bash
-    export LABEL_STUDIO_URL='http://localhost:8080' # Replace with your LS URL
-    export LABEL_STUDIO_API_KEY='your_actual_api_key_here'
-    
-    python label-studio-mcp.py
-    ```
-    The Python script reads these using `os.getenv()`.
-
-2.  **MCP Client Configuration (e.g., Cursor's `mcp.json`):**
-    If launching the server via an MCP client configuration file, you can specify the environment variables directly within the server definition. This is often preferred for client-managed servers.
-
-    Example `mcp.json` entry:
     ```json
     {
       "mcpServers": {
@@ -73,7 +83,7 @@ The MCP server requires the URL and API key for your Label Studio instance. Ther
       }
     }
     ```
-    When configured this way, the `env` block injects the variables into the server process environment, and the script's `os.getenv()` calls will pick them up.
+    When configured this way, the `env` block injects the variables into the server process environment, and the script's `os.getenv()` calls will pick them up. -->
 
 ## Tools
 
@@ -108,21 +118,6 @@ The MCP server exposes the following tools:
 6.  Generate a prediction result structure (list of dicts).
 7.  Add the prediction using `create_label_studio_prediction_tool`.
 
-## Running the Server
-
-The MCP server can be run directly using Python:
-
-```bash
-python label-studio-mcp.py [options]
-```
-
-**Options:**
-
-*   `--transport {http|stdio}`: Specify the communication transport (default: `stdio`).
-*   `--port PORT`: Set the port number for the HTTP transport (default: `3000`).
-*   `--host HOST`: Set the host address for the HTTP transport (default: `0.0.0.0`).
-
-Ensure the required environment variables (`LABEL_STUDIO_URL`, `LABEL_STUDIO_API_KEY`) are set before running.
 
 
 ## Contact
