@@ -2,8 +2,17 @@
 name = "label-studio-mcp"
 version = "0.1.0"
 description = "A Model Context Protocol (MCP) server for Label Studio"
+authors = [
+    { name = "HumanSignal", email = "support@humansignal.com" },
+]
 readme = "README.md"
-requires-python = ">=3.13"
+license = "Apache-2.0"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.28.1",
     "label-studio-sdk>=1.0.11",
@@ -12,3 +21,12 @@ dependencies = [
     "protego>=0.4.0",
     "readabilipy>=0.3.0",
 ]
+
+[project.scripts]
+mcp-label-studio = "label_studio_mcp.main:main"
+
+[project.urls]
+Home = "https://github.com/HumanSignal/label-studio-mcp-server"
+
+[tool.setuptools]
+packages = ["label_studio_mcp"]
