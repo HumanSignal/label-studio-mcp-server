@@ -85,6 +85,13 @@ uv sync
     ```
     When configured this way, the `env` block injects the variables into the server process environment, and the script's `os.getenv()` calls will pick them up. -->
 
+## Install for Claude Desktop
+
+To install the MCP server for [Claude Desktop](https://claude.ai/download), you can run the following command from the root of this repository:
+```bash
+mcp install -e . -v LABEL_STUDIO_API_KEY=<your_api_key> -v LABEL_STUDIO_URL=<your_label_studio_url> label-studio-mcp.py
+```
+
 ## Tools
 
 The MCP server exposes the following tools:
