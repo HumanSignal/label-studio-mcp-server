@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project provides a Model Context Protocol (MCP) server that allows interaction with a Label Studio instance using the `label-studio-sdk`. It enables programmatic management of labeling projects, tasks, and predictions via natural language or structured calls from MCP clients. Using this MCP Server, you can make requests like: 
+This project provides a Model Context Protocol (MCP) server that allows interaction with a [Label Studio](https://labelstud.io/) instance using the `label-studio-sdk`. It enables programmatic management of labeling projects, tasks, and predictions via natural language or structured calls from MCP clients. Using this MCP Server, you can make requests like: 
 
 * "Create a project in label studio with this data ..." 
 * "How many tasks are labeled in my RAG review project?" 
@@ -25,22 +25,19 @@ This project provides a Model Context Protocol (MCP) server that allows interact
 
 ## Configuration
 
-The MCP server requires the URL and API key for your Label Studio instance. If launching the server via an MCP client configuration file, you can specify the environment variables directly within the server definition. This is often preferred for client-managed servers.
+The MCP server requires [the URL and API key for your Label Studio instance](https://labelstud.io/guide/access_tokens). If launching the server via an MCP client configuration file, you can specify the environment variables directly within the server definition. This is often preferred for client-managed servers.
 
-Example `mcp.json` entry:
+Add the following JSON entry to your `claude_desktop_config.json` file or Cursor MCP settings:
 
 ```json
 {
     "mcpServers": {
         "label-studio": {
-            "command": "uv",
+            "command": "uvx",
             "args": [
-                "run",
-                "--with", 
-                "label-studio-mcp", 
-                "--python",
-                "3.13",
-                "label-studio-mcp"
+                "--from",
+                "git+https://github.com/HumanSignal/label-studio-mcp-server",
+                "mcp-label-studio"
             ],
             "env": {
                 "LABEL_STUDIO_API_KEY": "your_actual_api_key_here", // <-- Your API key
@@ -84,13 +81,6 @@ uv sync
     }
     ```
     When configured this way, the `env` block injects the variables into the server process environment, and the script's `os.getenv()` calls will pick them up. -->
-
-## Install for Claude Desktop
-
-To install the MCP server for [Claude Desktop](https://claude.ai/download), you can run the following command from the root of this repository:
-```bash
-mcp install -e . -v LABEL_STUDIO_API_KEY=<your_api_key> -v LABEL_STUDIO_URL=<your_label_studio_url> label-studio-mcp.py
-```
 
 ## Tools
 
